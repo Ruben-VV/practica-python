@@ -13,6 +13,8 @@ from math import factorial
 from scipy.stats import norm
 
 import pandas as pd
+import IC
+from IC import *
 
 
 seeded = [49,4,18,26,29,9,16,12,2,22,10,34]
@@ -23,3 +25,11 @@ strikes.loc[11,'unseeded']=None
 
 print strikes
 
+
+##m,ic = icnorm_media(strikes)
+icm = icnorm_media(strikes)
+##print m
+print icm
+
+icv = icnorm_var(strikes)
+print icv

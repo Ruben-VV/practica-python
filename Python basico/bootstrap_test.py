@@ -76,14 +76,14 @@ def bootstrap_resample2(X, n=None):
     -------
     returns X_resamples
     """
-    if isinstance(X, pd.Series):
+    if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):
         X = X.copy()
         X.index = range(len(X.index))
     if n == None:
         n = len(X)
         
     resample_i = np.floor(np.random.rand(n)*len(X)).astype(int)
-    X_resample = np.array(X[resample_i])  # TODO: write a test demonstrating why array() is important
+    X_resample = np.array(X.irow(resample_i))
     return X_resample
 
 
