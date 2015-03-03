@@ -64,7 +64,7 @@ lnP=ithaca['log P'].values
 ##print 'Comparativa de la desviacion estandar de log P'
 ##print comparar
 
-nb=10000
+nb=1000
 a=0.05
 ithaca_resampled2 = pd.DataFrame(columns=ithaca.columns, dtype=ithaca.dtypes)
 for col in ithaca.columns:
@@ -83,7 +83,7 @@ comparar = pd.DataFrame([ithaca.mean().values, ithaca_resampled2.mean().values,
                          ithaca.std(ddof=1).values,
                          ithaca_resampled2.std(ddof=1).values],
                         index=['media','media resampled', 'std','std resampled'],
-                        columns=ithaca.columns)
+                        columns=ithaca.columns).convert_objects(convert_numeric=True)
 print comparar
 
 
@@ -100,7 +100,8 @@ print icv
 ##print icv2
 
 def quantile2(x, q):
-    x_i=pd.DataFrame(index=[q], columns=ithaca.columns)
+    x_i=pd.DataFrame(index=[q],
+                     columns=ithaca.columns).convert_objects(convert_numeric=True)
     for i in range(len(q)):
         x_i.loc[q[i]] = ithaca.quantile(q[i]).values
     return x_i
@@ -136,19 +137,23 @@ def bootstrap_resample1(X, n=None):
 def bootstrap_resampleB(x, n=1000):
     """ Bootstrap resample repeat n times
     """
-    x_i=pd.DataFrame(index=[range(n)], columns=ithaca.columns)
+    x_i=pd.DataFrame(index=[range(n)], columns=ithaca.columns)    
     for i in range(n):
         x_resample = bootstrap_resample1(x)
         x_i.loc[i] = x_resample.std(ddof=1).values
-    return x_i
+##        x_i.astype(x.loc[i].dtypes)
+    return x_i.convert_objects(convert_numeric=True)
 
 ithaca_std = bootstrap_resampleB(ithaca)
-print ithaca_std
+ithaca_std = pd.DataFrame(ithaca_std, dtype=ithaca.dtypes)
+##print ithaca_std
 percentiles = quantile2(ithaca_std,[a/2, 1-a/2])
 print percentiles
 
 ithaca_std_sort = pd.DataFrame(ithaca_std['log P'], copy=True)
-print ithaca_std_sort.ix[1000*0.05/2-1]
+ithaca_std_sort = ithaca_std_sort.sort('log P')
 print ithaca_std_sort.ix[1000*(1-0.05/2)-1]
+print ithaca_std_sort.ix[1000*0.05/2-1]
+
 
 
