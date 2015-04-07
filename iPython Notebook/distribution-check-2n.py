@@ -126,7 +126,9 @@ cdfs = [
 ##    "wrapcauchy",      #Wrapped Cauchy
     "ksone",           #Kolmogorov-Smirnov one-sided (no stats)
     "kstwobign"]       #Kolmogorov-Smirnov two-sided test for Large N
-
+if getattr(options, 'filename')=='AOT_500_2.data':
+    cdfs.remove("chi")
+    cdfs.remove("chi2")
 
 result = []
 for cdf in cdfs:
@@ -156,7 +158,7 @@ if options.plot:
     
     # plot data
     #plt.hist(data, normed=True, bins=max(10, len(data)/20))
-    histdata = plt.hist(data, bins=np.arange(0,0.75,0.05))
+    histdata = plt.hist(data, bins=np.arange(0,0.7,0.05))
     xh = [0.5 * (histdata[1][r] + histdata[1][r+1]) for r in xrange(len(histdata[1])-1)]
     binwidth = (max(xh) - min(xh)) / len(histdata[1])
     # plot fitted probability

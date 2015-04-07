@@ -126,7 +126,9 @@ cdfs = [
 ##    "wrapcauchy",      #Wrapped Cauchy
     "ksone",           #Kolmogorov-Smirnov one-sided (no stats)
     "kstwobign"]       #Kolmogorov-Smirnov two-sided test for Large N
-
+if getattr(options, 'filename')=='AOT_500_2.data':
+    cdfs.remove("chi")
+    cdfs.remove("chi2")
 
 result = []
 for cdf in cdfs:

@@ -50,7 +50,7 @@ cdfs = [
     "anglit",          #Anglit
     "arcsine",         #Arcsine
     "beta",            #Beta
-    "betaprime",       #Beta Prime   #Fail plot with AOT_500.data
+    "betaprime",       #Beta Prime   #Divergencia al representar AOT_500.data
     "bradford",        #Bradford
     "burr",            #Burr
     "cauchy",          #Cauchy
@@ -162,7 +162,6 @@ if options.plot:
     
     # plot fitted probability
     for t in range(options.top):
-        #print best[t][0]
         params = eval("scipy.stats."+best[t][0]+".fit(data)")
         fct = eval("scipy.stats."+best[t][0]+".freeze"+str(params))
         x = np.linspace(fct.ppf(0.001), fct.ppf(0.999), 500)
