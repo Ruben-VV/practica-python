@@ -166,6 +166,7 @@ if options.plot:
         x = np.linspace(fct.ppf(0.001), fct.ppf(0.999), 500)
         #plt.plot(x, fct.pdf(x), lw=3, label=best[t][0])
         plt.plot(x, fct.pdf(x)*(len(data)*binwidth), lw=3, label=best[t][0])
+    plt.xlim([0, 0.75])
     plt.legend(loc='best', frameon=False)
     plt.title("Top "+str(options.top)+" Results")
     plt.show()

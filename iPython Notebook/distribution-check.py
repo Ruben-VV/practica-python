@@ -50,7 +50,7 @@ cdfs = [
     "anglit",          #Anglit
     "arcsine",         #Arcsine
     "beta",            #Beta
-##    "betaprime",       #Beta Prime
+    "betaprime",       #Beta Prime   #Fail plot with AOT_500.data
     "bradford",        #Bradford
     "burr",            #Burr
     "cauchy",          #Cauchy
@@ -95,7 +95,7 @@ cdfs = [
     "logistic",        #Logistic
     "loggamma",        #Log-Gamma
     "loglaplace",      #Log-Laplace (Log Double Exponential)
-    "lognorm",        #Log-Normal
+    "lognorm",         #Log-Normal
     "lomax",           #Lomax (Pareto of the second kind)
     "maxwell",         #Maxwell
     "mielke",          #Mielke's Beta-Kappa
@@ -162,7 +162,12 @@ if options.plot:
     
     # plot fitted probability
     for t in range(options.top):
-        print best[t][0]
+        #print best[t][0]
         params = eval("scipy.stats."+best[t][0]+".fit(data)")
         fct = eval("scipy.stats."+best[t][0]+".freeze"+str(params))
-        x = np.linspace(fct.ppf(0.001), fct.ppf(0.999)
+        x = np.linspace(fct.ppf(0.001), fct.ppf(0.999), 500)
+        plt.plot(x, fct.pdf(x), lw=3, label=best[t][0])
+    plt.legend(loc='best', frameon=False)
+    plt.title("Top "+str(options.top)+" Results")
+    plt.show()
+
