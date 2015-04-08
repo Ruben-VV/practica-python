@@ -124,11 +124,9 @@ cdfs = [
 ##    "weibull_min",     #Minimum Weibull (see Frechet)
 ##    "weibull_max",     #Maximum Weibull (see Frechet)
 ##    "wrapcauchy",      #Wrapped Cauchy
-    "ksone",           #Kolmogorov-Smirnov one-sided (no stats)
-    "kstwobign"]       #Kolmogorov-Smirnov two-sided test for Large N
-if getattr(options, 'filename')=='AOT_500_2.data':
-    cdfs.remove("chi")
-    cdfs.remove("chi2")
+##    "ksone",           #Kolmogorov-Smirnov one-sided (no stats)
+##    "kstwobign"]       #Kolmogorov-Smirnov two-sided test for Large N
+]
 
 result = []
 for cdf in cdfs:
@@ -158,17 +156,26 @@ if options.plot:
     
     # plot data
     #plt.hist(data, normed=True, bins=max(10, len(data)/20))
-    histdata = plt.hist(data, bins=np.arange(0,0.7,0.05))
+    histdata = plt.hist(data, bins=np.arange(0,0.7,0.05), alpha=.3)
     xh = [0.5 * (histdata[1][r] + histdata[1][r+1]) for r in xrange(len(histdata[1])-1)]
     binwidth = (max(xh) - min(xh)) / len(histdata[1])
+    scale = len(data)*binwidth
     # plot fitted probability
     for t in range(options.top):
         params = eval("scipy.stats."+best[t][0]+".fit(data)")
         fct = eval("scipy.stats."+best[t][0]+".freeze"+str(params))
-        x = np.linspace(fct.ppf(0.001), fct.ppf(0.999), 500)
+        # Readjust for fct.pdf(x)*scale too high
+        xppf = 0
+        x0 = fct.ppf(xppf)
+        while fct.pdf(x0) > 1.25*histdata[0][0]/scale:
+            xppf = xppf + 0.001
+            x0 = fct.ppf(xppf)
+        x = np.linspace(fct.ppf(xppf), fct.ppf(0.999), 500)
+        #x = np.linspace(fct.ppf(0.001), fct.ppf(0.999), 500)
         #plt.plot(x, fct.pdf(x), lw=3, label=best[t][0])
-        plt.plot(x, fct.pdf(x)*(len(data)*binwidth), lw=3, label=best[t][0])
+        plt.plot(x, fct.pdf(x)*scale, lw=2, label=best[t][0])
     plt.xlim([0, 0.75])
+    plt.ylim(ymin=0)
     plt.legend(loc='best', frameon=False)
     plt.title("Top "+str(options.top)+" Results")
     plt.show()
