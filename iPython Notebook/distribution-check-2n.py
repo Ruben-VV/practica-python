@@ -95,7 +95,7 @@ cdfs = [
 ##    "logistic",        #Logistic
 ##    "loggamma",        #Log-Gamma
 ##    "loglaplace",      #Log-Laplace (Log Double Exponential)
-##    "lognorm",        #Log-Normal
+##    "lognorm",         #Log-Normal
 ##    "lomax",           #Lomax (Pareto of the second kind)
 ##    "maxwell",         #Maxwell
 ##    "mielke",          #Mielke's Beta-Kappa
@@ -165,10 +165,12 @@ if options.plot:
         params = eval("scipy.stats."+best[t][0]+".fit(data)")
         fct = eval("scipy.stats."+best[t][0]+".freeze"+str(params))
         # Readjust for fct.pdf(x)*scale too high
-        xppf = 0
+        xppf = 1e-20
         x0 = fct.ppf(xppf)
-        while fct.pdf(x0) > 1.25*histdata[0][0]/scale:
-            xppf = xppf + 0.001
+        #bi, xppf0 = next([i,e] for i,e in enumerate(histdata[0]/scale) if e!=0.)
+        #while fct.pdf(x0) > 1.25*xppf0 and xppf<histdata[1][bi+3]:
+        while fct.pdf(x0) > 1.2*max(histdata[0]/scale):
+            xppf = xppf + binwidth/10
             x0 = fct.ppf(xppf)
         x = np.linspace(fct.ppf(xppf), fct.ppf(0.999), 500)
         #x = np.linspace(fct.ppf(0.001), fct.ppf(0.999), 500)

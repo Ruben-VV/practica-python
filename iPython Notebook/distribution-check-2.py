@@ -95,7 +95,7 @@ cdfs = [
 ##    "logistic",        #Logistic
 ##    "loggamma",        #Log-Gamma
 ##    "loglaplace",      #Log-Laplace (Log Double Exponential)
-##    "lognorm",        #Log-Normal
+##    "lognorm",         #Log-Normal
 ##    "lomax",           #Lomax (Pareto of the second kind)
 ##    "maxwell",         #Maxwell
 ##    "mielke",          #Mielke's Beta-Kappa
@@ -156,16 +156,16 @@ if options.plot:
     
     # plot data
     #plt.hist(data, normed=True, bins=max(10, len(data)/20))
-    histdata = plt.hist(data, normed=True, bins=np.arange(0,0.75,0.05), alpha=.3)
+    histdata = plt.hist(data, normed=True, bins=np.arange(0,0.7,0.02), alpha=.3)
     # plot fitted probability
     for t in range(options.top):
         params = eval("scipy.stats."+best[t][0]+".fit(data)")
         fct = eval("scipy.stats."+best[t][0]+".freeze"+str(params))
         # Readjust for fct.pdf(x)*scale too high
-        xppf = 0
+        xppf = 1e-20
         x0 = fct.ppf(xppf)
-        while fct.pdf(x0) > 1.6*histdata[0][0]:
-            xppf = xppf + 0.001
+        while fct.pdf(x0) > 1.2*max(histdata[0]/scale):
+            xppf = xppf + binwidth/10
             x0 = fct.ppf(xppf)
         x = np.linspace(fct.ppf(xppf), fct.ppf(0.999), 500)
         #x = np.linspace(fct.ppf(0.001), fct.ppf(0.999), 500)
