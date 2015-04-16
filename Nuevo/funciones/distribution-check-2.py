@@ -164,7 +164,7 @@ if options.plot:
         # Readjust for fct.pdf(x)*scale too high
         xppf = 1e-20
         x0 = fct.ppf(xppf)
-        while fct.pdf(x0) > 1.2*max(histdata[0]/scale):
+        while fct.pdf(x0) > 1.2*max(histdata[0]):
             xppf = xppf + binwidth/10
             x0 = fct.ppf(xppf)
         x = np.linspace(fct.ppf(xppf), fct.ppf(0.999), 500)
