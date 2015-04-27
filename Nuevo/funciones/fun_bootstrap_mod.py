@@ -10,56 +10,7 @@ from math import factorial
 import scipy.misc
 from scipy.stats import *
 
-def bootstrap(data, statistic=None, n_bootstraps=10000, seed=None, ci_width=0.95):
-    '''Condition: Bootstap of data with remplacement
 
-    Parameters
-    ----------
-    data : data for do bootstrap
-    statistic : string of stadistic. Default None that does mean and std(ddof=1)
-    n_bootstraps : number of repeat of bootstrap
-    seed : seed for random generation of permutations with repetition
-    ci_width : confidance interval in interval (0,1)
-    
-    Returns
-    -------
-    bootstrapped : list with resamples of statistic
-    ci : Max and Min of Confidance Interval
-    
-    '''
-    if statistic==None:
-        statistic = ["mean", "std"]
-    else:
-        statistic = [statistic]
-    data = np.asarray(data)
-    n = len(data)
-    #idx2 = np.random.randint(0, n, (n_bootstraps, n))
-    rng = np.random.RandomState(seed)    
-    
-    idx = rng.random_integers(0, n-1, (n_bootstraps, n))
-    
-    samples = data[idx]
-    #samples2 = data[idx2]
-    
-    bootstrapped = []
-    for fun in statistic:
-        arg=""
-        if fun=="std":
-            arg = ",ddof=1"
-        bootstrapped.append(eval("np."+fun+"(samples,1"+arg+")"))
-        [bs.sort() for bs in bootstrapped]
-    
-    ci_min = (1 - ci_width) / 2.    # ci_min = alpha/2.
-    ci_max = 1. - ci_min            # ci_max = 1 - alpha/2.
-    ci = [[x[int(ci_min * n_bootstraps)], x[int(ci_max * n_bootstraps)]] for x in bootstrapped]
-
-
-    #bootstrapped2 = np.sort(np.mean(samples2,1))
-    #ci2 = [bootstrapped2[int(ci_min * n_bootstraps)], bootstrapped2[int(ci_max * n_bootstraps)]]
-    return bootstrapped, ci#, bootstrapped2, ci2
-
-    
-#################################################################################
 def bootstrap2(data, num_samples=10000, alpha=0.05, statistic=None):
     """Returns bootstrap estimate of 100.0*(1-alpha) CI for statistic."""
     n = len(data)
@@ -73,21 +24,24 @@ def bootstrap2(data, num_samples=10000, alpha=0.05, statistic=None):
             stat = np.sort(statistic(samples, 1,ddof=1))
         else:
             stat = np.sort(statistic(samples, 1))
-        return (stat, [stat[int((alpha/2.0)*num_samples)],
-                stat[int((1-alpha/2.0)*num_samples)]])
+            
+        ci = [stat[int((alpha/2.0)*num_samples)],
+                stat[int((1-alpha/2.0)*num_samples)]]
+        return (stat, ci)
     elif np.size(statistic) == 2:
         stat_mean = np.sort(statistic[0](samples, 1))
         stat_std = np.sort(statistic[1](samples, 1, ddof=1))  
-        return (stat_mean[int((alpha/2.0)*num_samples)], stat_mean[int((1-alpha/2.0)*num_samples)], stat_mean, 
-                stat_std[int((alpha/2.0)*num_samples)], stat_std[int((1-alpha/2.0)*num_samples)], stat_std)
+        ci_mean = [stat_mean[int((alpha/2.0)*num_samples)], stat_mean[int((1-alpha/2.0)*num_samples)]]
+        ci_std = [stat_std[int((alpha/2.0)*num_samples)], stat_std[int((1-alpha/2.0)*num_samples)]]
+        return ( stat_mean, ci_mean, stat_std, ci_std)
     else:
         print 'Too many arguments in statistic'
-#################################################################################
 
 
-def plot_bootstrap(stat, ci_stat, statistic="Mean"):
+
+def plot_bootstrap2(stat, ci_stat, statistic="Mean"):
     #pylab.figure(figsize=(8,4))
-    pylab.hist(stat[0], 100, histtype='step')
+    pylab.hist(stat, 100, histtype='step')
     color = ['red', 'green']
     for i in xrange(2):
         pylab.axvline(ci_stat[i], c=color[i])
@@ -111,7 +65,7 @@ if __name__ == "__main__":
     ithaca['log P'] = np.log(ithaca['P'])
     x = ithaca['log P'].values
 
-    stat_mean, ci_mean = bootstrap(x,"mean")
+    stat_mean, ci_mean = bootstrap2(x,statistic=np.mean)
     obs_mean = np.mean(x)
     print "Mean of sample data: \n", obs_mean
     #pylab.figure(figsize=(8,8))

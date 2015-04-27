@@ -162,13 +162,13 @@ if options.plot:
         params = eval("scipy.stats."+best[t][0]+".fit(data)")
         fct = eval("scipy.stats."+best[t][0]+".freeze"+str(params))
         # Readjust for fct.pdf(x)*scale too high
-        xppf = 1e-20
-        x0 = fct.ppf(xppf)
-        while fct.pdf(x0) > 1.2*max(histdata[0]):
-            xppf = xppf + binwidth/10
-            x0 = fct.ppf(xppf)
-        x = np.linspace(fct.ppf(xppf), fct.ppf(0.999), 500)
-        #x = np.linspace(fct.ppf(0.001), fct.ppf(0.999), 500)
+#        xppf = 1e-20
+#        x0 = fct.ppf(xppf)
+#        while fct.pdf(x0) > 1.2*max(histdata[0]):
+#            xppf = xppf + binwidth/10
+#            x0 = fct.ppf(xppf)
+#        x = np.linspace(fct.ppf(xppf), fct.ppf(0.999), 500)
+        x = np.linspace(fct.ppf(0.001), fct.ppf(0.999), 500)
         plt.plot(x, fct.pdf(x), lw=2, label=best[t][0])
     plt.legend(loc='best', frameon=False)
     plt.title("Top "+str(options.top)+" Results")

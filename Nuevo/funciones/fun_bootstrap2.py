@@ -354,7 +354,7 @@ import matplotlib.pyplot as plt
 from matplotlib import pylab, mlab, pyplot
 
 def plot_bootstrap(stat, ci_stat, statistic="Mean"):    
-    pylab.figure(figsize=(8,4))
+    #pylab.figure(figsize=(8,4))
     pylab.hist(stat, 100, histtype='step')
     color = ['red', 'green']
     for i in range(2):
@@ -383,12 +383,15 @@ if __name__ == "__main__":
 
     obs_mean = np.mean(x)
     print "Mean of sample data: \n", obs_mean
+    pylab.figure()
+    pylab.subplot(211)
     plot_bootstrap(stat_mean, ci_mean)
     pylab.axvline(obs_mean, c='black')
 
     ci_std, stat_std = ci(x, np.mean, method='pi')
     obs_std = np.std(x,ddof=1)
     print "Standard Desviation of sample data: \n", obs_std
+    pylab.subplot(212)
     plot_bootstrap(stat_std, ci_std, "STD")
     pylab.axvline(obs_mean, c='black')
     plt.show()
