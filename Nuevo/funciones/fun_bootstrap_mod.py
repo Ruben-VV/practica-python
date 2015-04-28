@@ -71,14 +71,14 @@ if __name__ == "__main__":
     #pylab.figure(figsize=(8,8))
     pylab.figure()
     pylab.subplot(211)
-    plot_bootstrap(stat_mean, ci_mean[0])
+    plot_bootstrap2(stat_mean, ci_mean)
     pylab.axvline(obs_mean, c='black')
 
-    stat_std, ci_std = bootstrap(x,"std")
+    stat_std, ci_std = bootstrap2(x,statistic=np.std)
     obs_std = np.std(x,ddof=1)
     print "Standard Desviation of sample data: \n", obs_std
     pylab.subplot(212)
-    plot_bootstrap(stat_std, ci_std[0], "standar desviation")
+    plot_bootstrap2(stat_std, ci_std, "standar desviation")
     pylab.axvline(obs_mean, c='black')
     plt.show()
     

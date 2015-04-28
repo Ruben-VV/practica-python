@@ -17,7 +17,7 @@
     #from scipy import stats
     import numpy as np
     import matplotlib.pyplot as plt
-    import scipy
+    import scipy.stats
     from scipy.stats import stats, norm, t
     from numpy import linspace
     from pylab import plot,show,hist
@@ -97,6 +97,7 @@
         else:
             print "Se acepta H0 al nivel de significación del "+ str(a*100) + "%"
     else:
+        a = 1.-ci
         print cdf.ljust(16) + ("p: "+str(p)).ljust(25)+"D: "+str(D)
         print "H0: La distribución se ajusta a una distribución " + cdf
         if p<a:
