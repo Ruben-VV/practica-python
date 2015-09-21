@@ -9,13 +9,20 @@ from numpy import *
 from math import factorial
 import scipy.misc
 from scipy.stats import *
+import random
 
-
-def bootstrap2(data, num_samples=10000, alpha=0.05, statistic=None):
+def bootstrap2(data, num_samples=10000, alpha=0.05, statistic=None, replace=True):
     """Returns bootstrap estimate of 100.0*(1-alpha) CI for statistic."""
     n = len(data)
-    idx = np.random.randint(0, n, (num_samples, n))
-    samples = data[idx]
+    if replace==True:
+        idx = np.random.randint(0, n, (num_samples, n))
+        samples = data[idx]
+    else:
+        samples=random.sample(data,n)   
+        for i in xrange(num_samples-1):
+            samples=np.append(samples,random.sample(data,n))
+        samples=reshape(samples,(num_samples, n))    
+    
     if statistic == None: #
         statistic = [np.mean, np.std] #
         
